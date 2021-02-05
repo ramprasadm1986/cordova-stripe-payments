@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="cordova-stripe-payments"
+    version="0.0.1">
+
+    <name>Stripe Payments</name>
+    <description>Cordova plugin for Stripe payments using the native Android/iOS SDKs. Supports Apple Pay and card payments.</description>
+    <author>Ramprasad Moharana</author>
+    <license>Apache License 2.0</license>
+    <keywords>cordova,stripe,payments,apple pay,ach,google pay,cards,credit cards,checkout</keywords>
+    <repo>https://github.com/ramprasadm1986/cordova-stripe-payments</repo>
+    <issue>https://github.com/ramprasadm1986/cordova-stripe-payments/issues</issue>
+
+    <engines>
+      <engine name="cordova" version=">=9.0.0"/>
+      <engine name="cordova-android" version=">=8.0.0"/>
+      <!-- If installing on Cordova IOS 5.0, make sure to add
+      <preference name="SwiftVersion" value="4.1" />
+      to your config.xml under the ios platform section.
+      If installing on Cordova iOS < 5.0, you need to add cordova-plugin-add-swift-support
+      to your project and specify <preference name="UseSwiftLanguageVersion" value="4" />
+      in your config.xml file under the ios platform section. -->
+      <engine name="cordova-ios" version=">=5.0.0"/>
+    </engines>
+
+    <js-module src="www/StripePaymentsPlugin.js" name="StripePaymentsPlugin">
+      <clobbers target="window.plugins.StripePaymentsPlugin" />
+    </js-module>
+
+    <!-- Android -->
+    <platform name="android">
+      <!-- <config-file parent="/*/application" target="AndroidManifest.xml">
+        <meta-data android:name="com.google.android.gms.wallet.api.enabled" android:value="true" />
+      </config-file> -->
+
+      <config-file target="res/xml/config.xml" parent="/*">
+        <feature name="StripePaymentsPlugin">
+          <param name="android-package" value="com.ramprasad.plugins.stripe.StripePaymentsPlugin"/>
+        </feature>
+      </config-file>
+
+      <config-file target="AndroidManifest.xml" parent="/manifest/application/activity[@android:name='MainActivity']">
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW"/>
+            <category android:name="android.intent.category.DEFAULT"/>
+            <category android:name="android.intent.category.BROWSABLE"/>
+            <data android:host="stripe3ds" android:scheme="stripe"/>
+        </intent-filter>
+      </config-file>
+
+      <framework src="com.stripe:stripe-android:8.7.0" />
+      <framework src="src/android/build-extras-stripe-payments.gradle" custom="true" type="gradleReference" />
+
+      <source-file src="src/android/RetrofitFactory.java" target-dir="src/com/ramprasad/plugins/stripe/" />
+      <source-file src="src/android/StripePaymentConfig.java" target-dir="src/com/ramprasad/plugins/stripe/" />
+      <source-file src="src/android/StripePaymentsPlugin.java" target-dir="src/com/ramprasad/plugins/stripe/" />
+      <source-file src="src/android/StripePluginConfig.java" target-dir="src/com/ramprasad/plugins/stripe/" />
+      <source-file src="src/android/StripePluginEphemeralKeyProvider.java" target-dir="src/com/ramprasad/plugins/stripe/" />
+      <source-file src="src/android/StripePluginUtils.java" target-dir="src/com/ramprasad/plugins/stripe/" />
+      <source-file src="src/android/StripeService.java" target-dir="src/com/ramprasad/plugins/stripe/" />
+    </platform>
+
+
+    <!-- iOS -->
+    <platform name="ios">
+      <config-file target="config.xml" parent="/*">
+        <feature name="StripePaymentsPlugin">
+          <param name="ios-package" value="StripePaymentsPlugin"/>
+        </feature>
+      </config-file>
+
+       <!--
+      <framework src="Stripe" type="podspec" spec="~> 15.0.0" />
+      <framework src="Alamofire" type="podspec" spec="~> 4.8.1" />
+      <framework src="CardIO" type="podspec" spec="~> 5.4.1" /> -->
+
+      <!-- https://github.com/cordova-develop/cordova-plugin-pods3/blob/master/plugin.xml -->
+      <podspec>
+        <config>
+          <source url="https://github.com/CocoaPods/Specs.git"/>
+        </config>
+        <pods use-frameworks="true">
+          <pod name="Stripe" spec="~> 17.0.1" />
+          <pod name="CardIO" spec="~> 5.4.1" />
+          <pod name="Alamofire" spec="~> 4.8.1" swift-version="4.2" />
+        </pods>
+      </podspec>
+
+      <source-file src="src/ios/StripeAPIClient.swift" />
+      <source-file src="src/ios/StripePaymentOptions.swift" />
+      <source-file src="src/ios/StripePaymentsPluginConfig.swift" />
+      <source-file src="src/ios/StripePaymentsPlugin.swift" />
+      <source-file src="src/ios/StripePaymentContextFooterView.swift" />
+    </platform>
+</plugin>
+
+
+
+
